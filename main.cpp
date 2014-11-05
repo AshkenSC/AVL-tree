@@ -9,13 +9,19 @@ Shicheng Ai #200356891
 using namespace std;
 
 int foundMark = 0;  //If Search() finds a matched item, it will be set to 1.
+int distNum = 1;    //It's used in InOrder() to store the distance between nodes and the left edge.
 string st1 = "D:\\data\\";
-string st2;
+string st2;     //The two strings are for file destination.
 char tempf[10];
-char buffer[256];
+char buffer[256];   //The two char arrays are used to temporarily store strings from the file.
 string bufferS; //convert from char to string
 
-//Pointer variables for use
+//A queue for printing the tree.
+NODE* nodeQueue[1024];
+int head = 0;
+int tail = 0;
+
+//A frequently used pointer variable
 NODE * p;
 
 //Initialize page and position counter
@@ -34,12 +40,9 @@ int main()
 
     //Print the index without occurrences in AVL tree format.
     cout<<endl<<"2. Print the index without occurrences in AVL tree format."<<endl;
-    cout<<"2.1 PreOrder Traverse: "<<endl;
-    PreOrder(p);
-    cout<<endl<<"2.2 InOrder Traverse: "<<endl;
-    InOrder(p);
-    cout<<endl<<"2.3 PostOrder Traverse: "<<endl;
-    PostOrder(p);
+    InOrder(p); //Traverse the tree using InOrder method for calculating the spaces we need for every node
+    PrintTree(p);
+
 
     //Print the index with the occurrences.
     cout<<endl<<endl<<"3. Print the index with the occurrences."<<endl;
@@ -52,6 +55,7 @@ int main()
 }
 
 void DataIn(int i)
+//Input data from files
 {
 
  for (int i=0; i<=19; i++)   //Different i stands for different pages
@@ -85,7 +89,7 @@ void DataIn(int i)
 }
 
 void Filter(char *c)
-//Convert capitals to lower cases and filter symbols
+//This function is for converting capitals to lower cases and filter symbols
 {
     while (*c != '\0')
     {
@@ -142,27 +146,19 @@ void FirstOcc(NODE* p)
     FirstOcc(p->right);
 }
 
-void PreOrder(NODE* p)
-{
-    if(p == NULL)
-        return;
-
-    cout<<p->data.word<<"  ";
-    PreOrder(p->left);
-    PreOrder(p->right);
-}
-
 void InOrder(NODE* p)
+//Traverse the tree using InOrder for calculating the spaces we need for every node
 {
     if(p == NULL)
         return;
     InOrder(p->left);
-    cout<<p->data.word<<"  ";
+    p->distance = distNum;
+    distNum++;
     InOrder(p->right);
 }
 
 void PreOrder(NODE* p, string s)
-//Use this reloaded PreOrder() function to execute the searching task.
+//This PreOrder() traverse is for executing the searching task.
 {
     extern int foundMark;
     int i = 0;
@@ -188,23 +184,83 @@ void PreOrder(NODE* p, string s)
     PreOrder(p->right, s);
 }
 
-void PostOrder(NODE* p)
+
+//Below are Functions about the queue
+NODE* DeQueue()
 {
-    if(p == NULL)
-        return;
-    PostOrder(p->left);
-    PostOrder(p->right);
-    cout<<p->data.word<<"  ";
+    NODE* temp = nodeQueue[head];
+    head++;
+    head %= 1024;
+    return temp;
+}
+
+void EnQueue(NODE* p)
+{
+   nodeQueue[tail] = p;
+   tail++;
+   tail %= 1024;
+}
+
+int IsEmpty()
+{
+    return (head == tail);
+}
+//Above are Funtions about the queue
+
+
+void PrintTree(NODE* p)
+//The function is used to print an AVL tree.
+//A queue and functions relating to it are also used for printing.
+{
+    NODE* lineLast; //It stores the last node of the current line
+    NODE* curr;     //It stores the current dequeue&print node
+    NODE* nextLast; //It stores the possible last node of next line
+    int prevDist = 0;   //It's used to store the PREVIOUS node's distance to the left
+    int i;
+
+    EnQueue(p);
+    lineLast = p;
+    while(!IsEmpty())
+    {
+        curr = DeQueue();
+
+        for (i=0;i<(curr->distance-prevDist);i++)
+            cout<<" ";
+        cout<<curr->data.word;
+
+        prevDist = curr->distance;
+        if (curr->left != NULL)
+        {
+            nextLast = curr->left;
+            EnQueue(nextLast);
+        }
+        if (curr->right != NULL)
+        {
+            nextLast = curr->right;
+            EnQueue(nextLast);
+        }
+        if (curr == lineLast)
+        //if the current printing node IS the last one of a line
+        //set the nextLast as the lineLast
+        //and reset the prevDist variable
+        {
+            cout<<endl;
+            lineLast = nextLast;
+            prevDist = 0;
+        }
+    }
 }
 
 void Search(NODE* p)
+//This function is to search for given words in the item
+//And report their occurrences
 {
     extern int foundMark;
     foundMark = 0;
     string tmp;
     while(1)
     {
-        cout<<endl<<"4.Type in what you are looking for:";
+        cout<<endl<<"4.Type in the word you are looking for:";
         cin>>tmp;
         PreOrder(p, tmp);
         if(foundMark == 0)

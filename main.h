@@ -12,6 +12,7 @@ typedef struct treeNode
     index data;
     treeNode* left;
     treeNode* right;
+    int distance;   //the distance to the left edge of the screen. It's used in printing the tree.
     int height;
 
     treeNode ()
@@ -42,6 +43,12 @@ void InOrder(NODE* p);
 void PreOrder(NODE* p, string s);
 void PostOrder(NODE* p);
 void Search(NODE* p);
+
+NODE* DeQueue();
+void EnQueue(NODE* P);
+int IsEmpty();
+void PrintTree(NODE* p);
+
 
 #endif // MAIN_H
 
