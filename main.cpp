@@ -1,25 +1,33 @@
-﻿#include <stdio.h>
+﻿#include <iostream>
 #include <stdlib.h>
 #include <math.h>
+#include <fstream>
+#include <string.h>
 #define OK 1
 #define ERROR -1
 //#define m 9 //3阶树
 #define N 16 //数据元素个数
-#define MAX 5 //字符串最大长度＋1
+#define MAX 256 //字符串最大长度＋1
 
 using namespace std;
 
 typedef int KeyType;
-const int m = 3;
-struct Others  //记录的其它部分
+const int m = 9;
+/*struct Others  //记录的其它部分
 {
-    char info[MAX];
-};
+    char* info[MAX];
+};*/
+
 
 struct Record
 {
     KeyType key; //关键字
-    Others others; //其它部分
+    char* others; //其它部分
+
+    Record()
+    {
+        key = 0;
+    }
 };
 
 typedef struct BTNode   //with m
@@ -231,7 +239,7 @@ Result SearchBTree(BTree T, KeyType K)
 
 void print(BTNode c, int i) // TraverseDSTable()调用的函数
 {
-    printf("(%d,%s)\n", c.node[i].key, c.node[i].recptr->others.info);
+    printf("(%d,%s)\n", c.node[i].key, c.node[i].recptr->others);
 }//print
 
 void TraverseDSTable(BTree DT, void(*Visit)(BTNode, int))
@@ -264,7 +272,7 @@ void InputBR(BTree & t, Record r[])
 {
     Result s;
 
-    for(int i = 0; i < N; i++)
+    for(int i = 0; r[i].key != 0; i++)
     {
         s = SearchBTree(t, r[i].key);
 
@@ -279,7 +287,7 @@ void UserSearch(BTree t)
 {
     int i;
     Result s;
-    printf("\n请输入待查找记录的关键字: ");
+    printf("\nPlease enter the key you are looking for: ");
     scanf("%d", &i);
     s = SearchBTree(t, i);
 
@@ -289,7 +297,7 @@ void UserSearch(BTree t)
     }
     else
     {
-        printf("没找到");
+        printf("Key not found!");
     }
 
     printf("\n");
@@ -383,15 +391,15 @@ void DeleteIt(BTree t, BTNode * dnode, int id)  //with m
 
 void UserDelete(BTree t)
 {
-    KeyType date;
+    KeyType k;
     Result s;
-    printf("Please input the date you want to delete:\n");
-    scanf("%d", &date);
-    s = SearchBTree(t, date);
+    printf("Please input the key you want to delete:\n");
+    scanf("%d", &k);
+    s = SearchBTree(t, k);
 
     if(!s.tag)
     {
-        printf("Search failed,no such date\n");
+        printf("Search failed,no such key\n");
     }
     else
     {
@@ -401,15 +409,44 @@ void UserDelete(BTree t)
 
 int main()
 {
-    Record r[N] = {{24, "1"}, {45, "2"}, {53, "3"}, {12, "4"}, {37, "5"},
+    /*Record r[N] = {{24, "1"}, {45, "2"}, {53, "3"}, {12, "4"}, {37, "5"},
         {50, "6"}, {61, "7"}, {90, "8"}, {100, "9"}, {70, "10"},
         {3, "11"}, {30, "12"}, {26, "13"}, {85, "14"}, {3, "15"},
         {7, "16"}
-    };
+    };*/
+
+    Record data[500];
+    int i = 0;
+    fstream fin("censusdata.txt");
+    char lineTemp[256];
+    char* othersTemp;
+    if(!fin)
+    {
+        cerr << "error occurred.\n";
+    }
+    while(!fin.eof())
+    {
+        fin.getline(lineTemp,256,'\n');
+        data[i].key = atoi(strtok(lineTemp, ","));
+        othersTemp = strtok(NULL,"");
+        data[i].others = (char*)malloc(strlen(othersTemp));
+        strcpy(data[i].others, othersTemp);
+        i++;
+        //cout << data[i].others.info << endl;
+    }
+
+    /*i = 0;
+    while(1)
+    {
+        if(data[i].key == 0)
+            break;
+        cout << data[i].key << data[i].others << endl;
+        i++;
+    }*/
     BTree t;
     InitDSTable(t);
-    InputBR(t, r);
-    printf("按关键字的顺序遍历B_树:\n");
+    InputBR(t, data);
+    printf("Traversing the B-Tree:\n");
     TraverseDSTable(t, print);
     UserSearch(t);
     UserDelete(t);
