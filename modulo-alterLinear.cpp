@@ -100,25 +100,25 @@ int main()
                     hashed = 0;
                     continue;
                 }
-                hashed++;
+                //hashed++;
 
                 //Alternating linear probing
                 /* Instead of simple hashed++ we use algorithm below */
-//                probe = 1 - probe;
-//                if(probe == 1)
-//                {
-//                    rightAdd++;
-//                    hashed = rightAdd % 107;
-//                }
-//                else
-//                {
-//                    leftAdd--;
-//                    if(leftAdd < 0)
-//                    {
-//                        leftAdd = 106;
-//                    }
-//                    hashed = leftAdd;
-//                }
+                probe = 1 - probe;
+                if(probe == 1)
+                {
+                    rightAdd++;
+                    hashed = rightAdd % 107;
+                }
+                else
+                {
+                    leftAdd--;
+                    if(leftAdd < 0)
+                    {
+                        leftAdd = 106;
+                    }
+                    hashed = leftAdd;
+                }
                 /* Instead of simple hashed++ we use algorithm above */
 
                 if(table[hashed].key == 0)
