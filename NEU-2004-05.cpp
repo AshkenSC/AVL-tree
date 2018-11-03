@@ -23,36 +23,36 @@ int main() {
 Node* Merge(Node *a, Node *b) {
     Node *p1 = a, *p2 = b, *head, *p;
     // initialize new head
-    if(p1.data < p2.data) {
-        head.next = p1;
-        p1 = p1.next;
+    if((*p1).data < (*p2).data) {
+        (*head).next = p1;
+        p1 = (*p1).next;
     }
     else {
-        head.next = p2;
-        p2 = p2.next;
+        (*head).next = p2;
+        p2 = (*p2).next;
     }
-    p = head.next;
+    p = (*head).next;
     // merge
     while(p1 != nullptr && p2 != nullptr) {
-        if(p1.data < p2.data) {
-            p.next = p1;
-            p1 = p1.next;
+        if((*p1).data < (*p2).data) {
+            (*p).next = p1;
+            p1 = (*p1).next;
         }
         else {
-            p.next = p2;
-            p2 = p2.next;
+            (*p).next = p2;
+            p2 = (*p2).next;
         }
     }
     while(p1 != nullptr) {
-        p.next = p1;
-        p1 = p1.next;
+        (*p).next = p1;
+        p1 = (*p1).next;
     }
     while(p2 != nullptr) {
-        p.next = p2;
-        p2 = p2.next;
+        (*p).next = p2;
+        p2 = (*p2).next;
     }
     // return head of merged list
-    p.next = nullptr;
+    (*p).next = nullptr;
     return head;
 }
 
