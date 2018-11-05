@@ -1,6 +1,5 @@
 /*
 NEU 2004-5
-
 设有两个单链表,一个升序,一个降序.
 设编写算法,将这两个链表合并为一个有序链表
 
@@ -24,38 +23,21 @@ int main() {
 }
 
 Node* Merge(Node *a, Node *b) {
-    Node *p1 = a, *p2 = b, *head, *p;
-    // initialize new head
-    if((*p1).data < (*p2).data) {
-        (*head).next = p1;
-        p1 = (*p1).next;
+    // suppose list a is reversed
+    // reverse list a
+    Node *head;
+    Node *pre = a, *p = (*a).next, *q = p;
+    while(p != nullptr) {
+        p = (*p).next;
+        (*q).next = pre;
+        pre = q;
+        q = p;
     }
-    else {
-        (*head).next = p2;
-        p2 = (*p2).next;
-    }
-    p = (*head).next;
-    // merge
-    while(p1 != nullptr && p2 != nullptr) {
-        if((*p1).data < (*p2).data) {
-            (*p).next = p1;
-            p1 = (*p1).next;
-        }
-        else {
-            (*p).next = p2;
-            p2 = (*p2).next;
-        }
-    }
-    while(p1 != nullptr) {
-        (*p).next = p1;
-        p1 = (*p1).next;
-    }
-    while(p2 != nullptr) {
-        (*p).next = p2;
-        p2 = (*p2).next;
-    }
-    // return head of merged list
-    (*p).next = nullptr;
+    (*a).next = nullptr;
+    a = pre;
+
+    // TODO: merge a and b
+
     return head;
 }
 
