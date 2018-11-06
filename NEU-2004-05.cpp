@@ -37,6 +37,33 @@ Node* Merge(Node *a, Node *b) {
     a = pre;
 
     // TODO: merge a and b
+    // 1.
+    Node *r;
+    p = a; q = b;
+    if((*p).data < (*q).data) {
+        head = p;
+        p = (*p).next;
+    }
+    else {
+        head = q;
+        q = (*q).next;
+    }
+    r = head;
+    // 2.
+    while(p != nullptr && q != nullptr) {
+        if((*p).data < (*q).data) {
+            (*r).next = p;
+            r = p;
+            p = (*p).next;
+        }
+        else {
+            (*r).next = q;
+            r = q;
+            q = (*q).next;
+        }
+    }
+    // TODO: merge the remaining part
+
 
     return head;
 }
