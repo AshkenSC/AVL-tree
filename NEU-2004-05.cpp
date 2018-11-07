@@ -62,8 +62,13 @@ Node* Merge(Node *a, Node *b) {
             q = (*q).next;
         }
     }
-    // TODO: merge the remaining part
-
+    // 3.
+    if(p != nullptr) {
+        (*r).next = p;
+    }
+    else {
+        (*r).next = q;
+    }
 
     return head;
 }
