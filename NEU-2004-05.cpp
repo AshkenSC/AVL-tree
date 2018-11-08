@@ -37,7 +37,7 @@ Node* Merge(Node *a, Node *b) {
     a = pre;
 
     // TODO: merge a and b
-    // 1.
+    // 1. reverse the reversed list
     Node *r;
     p = a; q = b;
     if((*p).data < (*q).data) {
@@ -49,7 +49,7 @@ Node* Merge(Node *a, Node *b) {
         q = (*q).next;
     }
     r = head;
-    // 2.
+    // 2. merge common length part of the 2 lists
     while(p != nullptr && q != nullptr) {
         if((*p).data < (*q).data) {
             (*r).next = p;
@@ -62,7 +62,7 @@ Node* Merge(Node *a, Node *b) {
             q = (*q).next;
         }
     }
-    // 3.
+    // 3. merge the rest of the longer list
     if(p != nullptr) {
         (*r).next = p;
     }
